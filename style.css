@@ -1,0 +1,162 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* Header Styling */
+.main-header {
+    background-color: #1e88e5; /* Modern Blue */
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.menu-icon {
+    font-size: 24px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.main-header h1 {
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.main-header h1 span {
+    font-size: 12px;
+    vertical-align: middle;
+    opacity: 0.8;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-profile i {
+    font-size: 30px;
+}
+
+/* Dashboard Layout */
+.dashboard {
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.welcome-text {
+    margin-bottom: 30px;
+    font-weight: 400;
+    color: #555;
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* Individual Cards */
+.card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.icon-box {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.card p {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background: #1e88e5;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #1565c0;
+}
+
+/* Icon Colors */
+.blue { background: #3498db; }
+.green { background: #2ecc71; }
+.orange { background: #e67e22; }
+.gold { background: #f1c40f; }
+.purple { background: #9b59b6; }
+.teal { background: #1abc9c; }
+.red { background: #e74c3c; }
+.brown { background: #a0522d; }
+.dark-blue { background: #2c3e50; }
+.gray { background: #95a5a6; }
+.pink { background: #fd79a8; }
+.indigo { background: #6c5ce7; }
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>School Management System v1.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+body{background:#f1f5f9}
+
+/* HEADER */
+header{
+    background:#1e293b;
+    color:#fff;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+}
+header span{color:#38bdf8}
+
+/* DASHBOARD */
+.dashboard{padding:20px}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+.icon{
+    width:50px;height:50px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    margin-bottom:10px;
+}
+.blue{background:#2563eb}
+.green{background:#16a34a}
+.orange{background:#f97316}
+.gold{background:#facc15}
+.purple{background:#7c3aed}
+.red{background:#dc2626}
+
+button{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+/* MODULES */
+.module{display:none;padding:20px}
+.module.active{display:block}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:8px;
+    border:1px solid #cbd5e1;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    margin-top:10px;
+}
+th,td{padding:10px;border-bottom:1px solid #e5e7eb}
+
+.action{padding:5px 8px;border:none;border-radius:6px;cursor:pointer}
+.edit{background:#facc15}
+.delete{background:#ef4444;color:#fff}
+.back{background:#334155}
+
+footer{
+    background:#1e293b;
+    color:#fff;
+    text-align:center;
+    padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>SCHOOL MANAGEMENT SYSTEM <span>V1.0</span></h2>
+<div>Admin <i class="fas fa-user-circle"></i></div>
+</header>
+
+<!-- DASHBOARD -->
+<section class="dashboard" id="dashboard">
+<h2>Welcome Administrator</h2><br>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon blue"><i class="fas fa-user-graduate"></i></div>
+<h3>Students</h3>
+<button onclick="openModule('students')">Manage</button>
+</div>
+
+<div class="card">
+<div class="icon green"><i class="fas fa-chalkboard-teacher"></i></div>
+<h3>Staff</h3>
+<button onclick="openModule('staff')">Manage</button>
+</div>
+
+<div class="card">
+<div class="icon orange"><i class="fas fa-clipboard-check"></i></div>
+<h3>Attendance</h3>
+<button onclick="openModule('attendance')">View</button>
+</div>
+
+<div class="card">
+<div class="icon gold"><i class="fas fa-file-invoice-dollar"></i></div>
+<h3>Fees</h3>
+<button onclick="openModule('fees')">Collect</button>
+</div>
+
+<div class="card">
+<div class="icon purple"><i class="fas fa-edit"></i></div>
+<h3>Exams</h3>
+<button onclick="openModule('exams')">Set Exam</button>
+</div>
+
+<div class="card">
+<div class="icon red"><i class="fas fa-laptop-code"></i></div>
+<h3>E-Learning</h3>
+<button onclick="openModule('elearning')">Open</button>
+</div>
+
+</div>
+</section>
+
+<!-- STUDENTS -->
+<section class="module" id="students">
+<button class="back" onclick="back()">← Back</button>
+<h2>Student Management</h2>
+
+<input id="sname" placeholder="Name">
+<input id="sclass" placeholder="Class">
+<input id="scontact" placeholder="Contact">
+<button onclick="saveStudent()">Add Student</button>
+
+<table>
+<thead><tr><th>Name</th><th>Class</th><th>Contact</th><th>Action</th></tr></thead>
+<tbody id="studentTable"></tbody>
+</table>
+</section>
+
+<!-- STAFF -->
+<section class="module" id="staff">
+<button class="back" onclick="back()">← Back</button>
+<h2>Staff Management</h2>
+
+<input id="tname" placeholder="Teacher Name">
+<input id="tsubject" placeholder="Subject">
+<button onclick="saveStaff()">Add Staff</button>
+
+<table>
+<thead><tr><th>Name</th><th>Subject</th></tr></thead>
+<tbody id="staffTable"></tbody>
+</table>
+</section>
+
+<!-- ATTENDANCE -->
+<section class="module" id="attendance">
+<button class="back" onclick="back()">← Back</button>
+<h2>Attendance</h2>
+
+<input id="attname" placeholder="Student Name">
+<button onclick="saveAttendance()">Mark Present</button>
+
+<table>
+<thead><tr><th>Name</th><th>Date</th></tr></thead>
+<tbody id="attendanceTable"></tbody>
+</table>
+</section>
+
+<!-- FEES -->
+<section class="module" id="fees">
+<button class="back" onclick="back()">← Back</button>
+<h2>Fees</h2>
+
+<input id="feename" placeholder="Student Name">
+<input id="feeamount" placeholder="Amount">
+<button onclick="saveFee()">Add Fee</button>
+
+<table>
+<thead><tr><th>Name</th><th>Amount</th></tr></thead>
+<tbody id="feeTable"></tbody>
+</table>
+</section>
+
+<!-- EXAMS -->
+<section class="module" id="exams">
+<button class="back" onclick="back()">← Back</button>
+<h2>Exams</h2>
+
+<input id="examname" placeholder="Exam Name">
+<input id="examsub" placeholder="Subject">
+<button onclick="saveExam()">Add Exam</button>
+
+<table>
+<thead><tr><th>Exam</th><th>Subject</th></tr></thead>
+<tbody id="examTable"></tbody>
+</table>
+</section>
+
+<!-- ELEARNING -->
+<section class="module" id="elearning">
+<button class="back" onclick="back()">← Back</button>
+<h2>E-Learning</h2>
+
+<input id="content" placeholder="Video / Link">
+<button onclick="saveContent()">Add Content</button>
+
+<table>
+<thead><tr><th>Content</th></tr></thead>
+<tbody id="contentTable"></tbody>
+</table>
+</section>
+
+<footer>© 2023 School Management System</footer>
+
+<script>
+const modules = document.querySelectorAll(".module");
+
+/* NAV */
+function openModule(id){
+    document.getElementById("dashboard").style.display="none";
+    modules.forEach(m=>m.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+function back(){
+    document.getElementById("dashboard").style.display="block";
+    modules.forEach(m=>m.classList.remove("active"));
+}
+
+/* STORAGE */
+let students = JSON.parse(localStorage.getItem("students"))||[];
+let staff = JSON.parse(localStorage.getItem("staff"))||[];
+let attendance = JSON.parse(localStorage.getItem("attendance"))||[];
+let fees = JSON.parse(localStorage.getItem("fees"))||[];
+let exams = JSON.parse(localStorage.getItem("exams"))||[];
+let content = JSON.parse(localStorage.getItem("content"))||[];
+
+/* STUDENTS */
+function saveStudent(){
+    students.push({name:sname.value,cls:sclass.value,contact:scontact.value});
+    localStorage.setItem("students",JSON.stringify(students));
+    load();
+}
+function load(){
+    studentTable.innerHTML=students.map((s,i)=>`
+    <tr>
+    <td>${s.name}</td>
+    <td>${s.cls}</td>
+    <td>${s.contact}</td>
+    <td>
+    <button class="action delete" onclick="students.splice(${i},1);localStorage.setItem('students',JSON.stringify(students));load()">Delete</button>
+    </td>
+    </tr>`).join("");
+
+    staffTable.innerHTML=staff.map(s=>`<tr><td>${s.name}</td><td>${s.sub}</td></tr>`).join("");
+    attendanceTable.innerHTML=attendance.map(a=>`<tr><td>${a}</td><td>${new Date().toLocaleDateString()}</td></tr>`).join("");
+    feeTable.innerHTML=fees.map(f=>`<tr><td>${f.name}</td><td>${f.amount}</td></tr>`).join("");
+    examTable.innerHTML=exams.map(e=>`<tr><td>${e.exam}</td><td>${e.sub}</td></tr>`).join("");
+    contentTable.innerHTML=content.map(c=>`<tr><td>${c}</td></tr>`).join("");
+}
+
+/* OTHER MODULES */
+function saveStaff(){staff.push({name:tname.value,sub:tsubject.value});localStorage.setItem("staff",JSON.stringify(staff));load();}
+function saveAttendance(){attendance.push(attname.value);localStorage.setItem("attendance",JSON.stringify(attendance));load();}
+function saveFee(){fees.push({name:feename.value,amount:feeamount.value});localStorage.setItem("fees",JSON.stringify(fees));load();}
+function saveExam(){exams.push({exam:examname.value,sub:examsub.value});localStorage.setItem("exams",JSON.stringify(exams));load();}
+function saveContent(){content.push(content.value);localStorage.setItem("content",JSON.stringify(content));load();}
+
+load();
+</script>
+
+</body>
+</html>
