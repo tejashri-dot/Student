@@ -7,6 +7,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 <script src="script.js" defer></script>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f4f6f9}
+.module{display:none;padding:20px}
+.module.active{display:block}
+.btn{padding:8px 14px;border:none;border-radius:4px;cursor:pointer}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-success{background:#16a34a;color:#fff}
+.btn-secondary{background:#6b7280;color:#fff}
+.table-container table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ddd;padding:8px;text-align:left}
+th{background:#f1f5f9}
+.mcq-card{background:#fff;padding:15px;margin-bottom:15px;border-radius:6px}
+.option{margin:5px 0}
+.score-box{background:#ecfeff;padding:15px;border-radius:6px;margin-top:15px;font-size:18px}
+</style>
 </head>
 
 <body>
@@ -40,12 +55,18 @@
             <li onclick="openModule('elearning')">
                 <i class="fas fa-laptop-code"></i> E-Learning
             </li>
+           <li onclick="openModule('mcq')">
+    <i class="fas fa-list-check"></i> MCQ Exam
+</li>
+
+
             <li onclick="openModule('reports')">
                 <i class="fas fa-chart-bar"></i> Reports
             </li>
             <li onclick="openModule('settings')">
                 <i class="fas fa-cog"></i> Settings
             </li>
+            
         </ul>
     </nav>
     
@@ -472,6 +493,33 @@
             </div>
         </div>
     </section>
+   <section class="module" id="mcq">
+<h2><i class="fas fa-user-graduate"></i> MCQ Examination</h2>
+
+<div class="form-grid">
+    <div class="form-group">
+        <label>Student Name</label>
+        <input type="text" id="studentNameMCQ" placeholder="Enter student name">
+    </div>
+
+    <div class="form-group">
+        <label>Select Class</label>
+        <select id="studentClassMCQ" onchange="loadClassMCQ()">
+            <option value="">Select Class</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+        </select>
+    </div>
+</div>
+
+<div id="mcqPaper"></div>
+
+<button class="btn btn-primary" onclick="submitMCQ()">Submit MCQ</button>
+
+<div id="resultBox"></div>
+</section>
+
+
 
     <!-- FEES MODULE -->
     <section class="module" id="fees">
@@ -744,6 +792,69 @@
 </main>
 
 <script>
+    const mcqBank = {
+  9: [
+    {
+      q: "What is the chemical formula of water?",
+      options: {A:"H2O", B:"CO2", C:"O2", D:"NaCl"},
+      correct: "A"
+    },
+    {
+      q: "Which gas is used in respiration?",
+      options: {A:"Nitrogen", B:"Oxygen", C:"Carbon", D:"Hydrogen"},
+      correct: "B"
+    }
+  ],
+  10: [
+    {
+      q: "What is Newton's Third Law?",
+      options: {
+        A:"F=ma",
+        B:"Energy conservation",
+        C:"Action-Reaction",
+        D:"Gravity law"
+      },
+      correct: "C"
+    },
+    {
+      q: "Unit of electric current?",
+      options: {A:"Volt", B:"Ohm", C:"Ampere", D:"Watt"},
+      correct: "C"
+    }
+  ]
+};
+
+let currentMCQ = [];
+function loadClassMCQ() {
+    const cls = document.getElementById("studentClassMCQ").value;
+    const mcqPaper = document.getElementById("mcqPaper");
+
+    mcqPaper.innerHTML = "";
+    currentMCQ = mcqBank[cls] || [];
+
+    if (currentMCQ.length === 0) {
+        mcqPaper.innerHTML = "<p>No MCQ available for this class.</p>";
+        return;
+    }
+
+    currentMCQ.forEach((q, i) => {
+        mcqPaper.innerHTML += `
+            <div class="mcq-card">
+                <strong>Q${i + 1}. ${q.q}</strong>
+                ${Object.entries(q.options).map(([k, v]) => `
+                    <div class="option">
+                        <label>
+                            <input type="radio" name="q${i}" value="${k}">
+                            ${k}. ${v}
+                        </label>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    });
+}
+
+
 // Initialize system
 window.onload = function() {
     initializeSystem();
@@ -753,6 +864,60 @@ window.onload = function() {
     updateDashboardStats();
     updateDataSize();
 };
+function submitMCQ(){
+  const studentName = document.getElementById("studentNameMCQ").value;
+  const studentClass = document.getElementById("studentClassMCQ").value;
+
+  if(!studentName || !studentClass){
+    alert("Please enter student name and class");
+    return;
+  }
+
+  let correct = 0;
+  let attempted = 0;
+
+  currentMCQ.forEach((q,i)=>{
+    const ans = document.querySelector(`input[name=q${i}]:checked`);
+    if(ans){
+      attempted++;
+      if(ans.value === q.correct) correct++;
+    }
+  });
+
+  document.getElementById("resultBox").innerHTML = `
+    <div class="score-box">
+      <strong>Student Name:</strong> ${studentName}<br>
+      <strong>Class:</strong> ${studentClass}<br>
+      <strong>Total Questions:</strong> ${currentMCQ.length}<br>
+      <strong>Attempted:</strong> ${attempted}<br>
+      <strong>Correct Answers:</strong> ${correct}
+    </div>
+  `;
+}
+function updateDataSize() {
+    const el = document.getElementById("dataSize");
+    if (el) {
+        el.innerText = "Data: 120 KB";
+    }
+}
+
+function openModule(moduleId) {
+    document.querySelectorAll(".module").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    const target = document.getElementById(moduleId);
+    if (target) {
+        target.classList.add("active");
+        document.getElementById("currentModule").innerText =
+            target.querySelector("h2")?.innerText || moduleId;
+    } else {
+        alert("Module not found: " + moduleId);
+    }
+}
+
+
+
 </script>
 
 </body>

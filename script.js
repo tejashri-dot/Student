@@ -66,7 +66,7 @@ function openModule(moduleId) {
         const navItems = document.querySelectorAll('.nav-menu li');
         const navMap = {
             'dashboard': 0, 'students': 1, 'staff': 2, 'attendance': 3,
-            'fees': 4, 'exams': 5, 'elearning': 6, 'reports': 7, 'settings': 8
+            'fees': 4, 'exams': 5, 'elearning': 6, 'mcq': 7, 'reports': 8, 'settings': 9
         };
         if (navMap[moduleId] !== undefined) {
             navItems[navMap[moduleId]].classList.add('active');
