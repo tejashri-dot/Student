@@ -576,6 +576,9 @@ th{background:#f1f5f9}
                     <select id="feeStudent" required>
                         <option value="">Select Student</option>
                         <!-- Students will be populated here -->
+                         <option>Rahul Sharma</option>
+    <option>Anjali Verma</option>
+    <option>Mohit Singh</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -612,6 +615,11 @@ th{background:#f1f5f9}
                     <input type="text" id="feeRemarks" placeholder="Any remarks">
                 </div>
             </div>
+            <div class="form-group">
+    <label>Total Fee (₹) *</label>
+    <input type="number" id="feeTotal" placeholder="Total fee for student" required>
+</div>
+
             <div class="form-actions">
                 <button class="btn btn-success" onclick="saveFee()">
                     <i class="fas fa-save"></i> Save Fee
@@ -827,6 +835,171 @@ th{background:#f1f5f9}
 </main>
 
 <script>
+ let fees = JSON.parse(localStorage.getItem("fees")) || [];
+let editFeeIndex = null;
+
+/* SAVE / UPDATE FEE */
+function saveFee() {
+    const student = document.getElementById("feeStudent").value;
+    const type = document.getElementById("feeType").value;
+    const paid = Number(document.getElementById("feeAmount").value);
+    const total = Number(document.getElementById("feeTotal").value);
+    const date = document.getElementById("feeDate").value || new Date().toISOString().slice(0,10);
+    const method = document.getElementById("feeMethod").value;
+    const remarks = document.getElementById("feeRemarks").value;
+
+    if (!student || !type || !paid || !total) {
+        alert("Please fill all required fields");
+        return;
+    }
+
+    if (paid > total) {
+        alert("Paid amount cannot exceed total fee");
+        return;
+    }
+
+    let feeData;
+
+    if (editFeeIndex !== null) {
+        // UPDATE (keep same receipt)
+        feeData = fees[editFeeIndex];
+        feeData.student = student;
+        feeData.type = type;
+        feeData.paid = paid;
+        feeData.total = total;
+        feeData.date = date;
+        feeData.method = method;
+        feeData.remarks = remarks;
+    } else {
+        // NEW ENTRY
+        feeData = {
+            receipt: "R" + Date.now(),
+            student,
+            type,
+            paid,
+            total,
+            date,
+            method,
+            remarks
+        };
+        fees.push(feeData);
+    }
+
+    localStorage.setItem("fees", JSON.stringify(fees));
+    editFeeIndex = null;
+    document.getElementById("feeForm").style.display = "none";
+    clearFeeForm();
+    loadFees();
+}
+
+/* LOAD FEES */
+function loadFees() {
+    const tbody = document.getElementById("feeTableBody");
+    tbody.innerHTML = "";
+
+    let totalCollected = 0;
+    let totalPending = 0;
+    let monthly = 0;
+    const month = new Date().getMonth();
+
+    fees.forEach((f, i) => {
+        const pending = f.total - f.paid;
+        totalCollected += f.paid;
+        totalPending += pending;
+
+        if (new Date(f.date).getMonth() === month) {
+            monthly += f.paid;
+        }
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${f.receipt}</td>
+            <td>${f.student}</td>
+            <td>${f.type}</td>
+            <td>₹${f.paid}</td>
+            <td>${f.date}</td>
+            <td>${f.method}</td>
+            <td style="color:${pending > 0 ? 'red' : 'green'}">
+                ${pending > 0 ? 'Pending ₹' + pending : 'Paid'}
+            </td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="editFee(${i})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteFee(${i})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("totalCollected").innerText = "₹" + totalCollected;
+    document.getElementById("totalPending").innerText = "₹" + totalPending;
+    document.getElementById("monthlyCollection").innerText = "₹" + monthly;
+}
+
+/* EDIT */
+function editFee(index) {
+    const f = fees[index];
+    editFeeIndex = index;
+
+    document.getElementById("feeStudent").value = f.student;
+    document.getElementById("feeType").value = f.type;
+    document.getElementById("feeAmount").value = f.paid;
+    document.getElementById("feeTotal").value = f.total;
+    document.getElementById("feeDate").value = f.date;
+    document.getElementById("feeMethod").value = f.method;
+    document.getElementById("feeRemarks").value = f.remarks;
+
+    document.getElementById("feeForm").style.display = "block";
+}
+
+/* DELETE */
+function deleteFee(index) {
+    if (!confirm("Delete this fee record?")) return;
+    fees.splice(index, 1);
+    localStorage.setItem("fees", JSON.stringify(fees));
+    loadFees();
+}
+
+/* CLEAR */
+function clearFeeForm() {
+    ["feeStudent","feeType","feeAmount","feeTotal","feeDate","feeRemarks"]
+        .forEach(id => document.getElementById(id).value = "");
+    document.getElementById("feeMethod").value = "Cash";
+}
+
+/* SHOW FORM */
+function showFeeForm() {
+    editFeeIndex = null;
+    clearFeeForm();
+    document.getElementById("feeForm").style.display = "block";
+}
+
+/* INIT */
+window.addEventListener("load", loadFees);
+
+// Clear form
+function clearFeeForm() {
+    document.getElementById("feeStudent").value = "";
+    document.getElementById("feeType").value = "";
+    document.getElementById("feeAmount").value = "";
+    document.getElementById("feeDate").value = "";
+    document.getElementById("feeMethod").value = "Cash";
+    document.getElementById("feeRemarks").value = "";
+}
+
+// Show Form
+function showFeeForm() {
+    editFeeIndex = null;
+    clearFeeForm();
+    document.getElementById("feeForm").style.display = "block";
+}
+
+// Load fees on startup
+window.addEventListener("load", loadFees);
+
+
     const mcqBank = {
   9: [
     {
